@@ -16,8 +16,10 @@
  * Text Domain:       gaol
  */
 
-require('gaol_metaboxes.php');
-require('gaol_importer.php');
+use lyttelton_gaol\fields;
+
+require 'gaol_metaboxes.php';
+require 'gaol_importer.php';
 
 // Register Custom Post Type
 if (!function_exists('lyttelton_convict_post_type')) {
@@ -78,23 +80,116 @@ if (!function_exists('lyttelton_convict_post_type')) {
 	add_action('init', 'lyttelton_convict_post_type', 0);
 }
 
-function search_library($template)
-{
-	global $wp_query;
-	$post_type = get_query_var('post_type');
-	if( $wp_query->is_search && $post_type == 'library' )
-	{
-		return locate_template('search-library.php');  //  redirect to archive-search.php
-	}
-	return $template;
-}
-add_filter('template_include', 'search_library');
-
 // Register Custom Meta
 if (class_exists('\lyttelton_gaol\gaol_metaboxes')){
 	new \lyttelton_gaol\gaol_metaboxes();
 }
 
-if (isset($_GET['do_the_import'])){
-    new \lyttelton_gaol\gaol_importer;
+/**
+ * Register custom query vars
+ *
+ * @link https://codex.wordpress.org/Plugin_API/Filter_Reference/query_vars
+ */
+function lyttelton_register_query_vars( $vars ) {
+//	$vars[] = 'type';
+	$bio_fields = new lyttelton_gaol\fields\bio();
+
+	foreach ($bio_fields->getConstants() as $key => $field) {
+		$vars[] = $field['id'];
+	}
+	return $vars;
+}
+add_filter( 'query_vars', 'lyttelton_register_query_vars' );
+
+/**
+ * Build a custom query based on several conditions
+ * The pre_get_posts action gives developers access to the $query object by reference
+ * any changes you make to $query are made directly to the original object - no return value is requested
+ *
+ * @link https://codex.wordpress.org/Plugin_API/Action_Reference/pre_get_posts
+ *
+ */
+function lyttelton_pre_get_posts( $query ) {
+	// check if the user is requesting an admin page
+	// or current query is not the main query
+	if ( is_admin() || ! $query->is_main_query() ){
+		return;
+	}
+
+//	if ( !is_post_type_archive( 'accommodation' ) ){
+	if ( !is_page( 'browse' ) ){
+		return;
+	}
+
+	// add meta_query elements
+	$meta_query = array();
+
+	if( !empty( get_query_var( fields\bio::NAME['id'] ) ) ){
+		$meta_query[] = array( 'key' => fields\bio::NAME['id'], 'value' => get_query_var( fields\bio::NAME['id'] ), 'compare' => 'LIKE' );
+	}
+	if( !empty( get_query_var( fields\bio::SURNAME['id'] ) ) ){
+		$meta_query[] = array( 'key' => fields\bio::SURNAME['id'], 'value' => get_query_var( fields\bio::SURNAME['id'] ), 'compare' => 'LIKE' );
+	}
+
+	if( count( $meta_query ) > 1 ){
+		$meta_query['relation'] = 'AND';
+	}
+	if( count( $meta_query ) > 0 ){
+		$query->set( 'meta_query', $meta_query );
+	}
+}
+add_action( 'pre_get_posts', 'lyttelton_pre_get_posts', 1 );
+
+function lyttelton_setup() {
+	add_shortcode( 'lyttelton_search_form', 'lyttelton_search_form' );
+}
+add_action( 'init', 'lyttelton_setup' );
+
+function lyttelton_search_form($args)
+{
+	// The Query
+	// meta_query expects nested arrays even if you only have one query
+	$sm_query = new WP_Query(array('post_type' => 'convict', 'posts_per_page' => '50', 'meta_query' => array(array('key' => fields\bio::NAME['id']))));
+
+	// The Loop
+	if ($sm_query->have_posts()) {
+		$entries = array();
+		while ($sm_query->have_posts()) {
+			$sm_query->the_post();
+			$entry_meta = get_post_meta(get_the_ID());
+
+			// populate an array of all occurrences (non duplicated)
+			if (!in_array($entry_meta, $entries)) {
+				$entries[] = $entry_meta;
+			}
+		}
+	} else {
+		echo 'No accommodations yet!';
+		return;
+	}
+
+	/* Restore original Post Data */
+	wp_reset_postdata();
+
+	if (count($entries) == 0) {
+		return;
+	}
+
+	asort($entries);
+
+	$select_city = '<select name="city" style="width: 100%">';
+	$select_city .= '<option value="" selected="selected">' . __('Select city', 'smashing_plugin') . '</option>';
+	foreach ($entries as $entry) {
+		$select_city .= '<option value="' . $entry[fields\bio::SURNAME]['id'][0] . '">' . $entry[fields\bio::SURNAME]['id'][0] . '</option>';
+	}
+	$select_city .= '</select>' . "\n";
+
+	echo $select_city;
+
+	reset($entries);
+}
+
+// CONVICT IMPORTING
+if (isset($_GET['do_the_import']) && is_admin()){
+    new \lyttelton_gaol\gaol_importer($_GET['do_the_import']);
 }

@@ -1,135 +1,143 @@
 <?php /** @noinspection SpellCheckingInspection */
 
 namespace lyttelton_gaol;
+
+use lyttelton_gaol\fields;
+use lyttelton_gaol\fields\bio;
+
+require 'gaol_fields.php'; // still need to require even when 'use' specified???
+
 class gaol_metaboxes
 {
 	private $screen = array(
 		'convict',
 	);
 
-	private $conviction_meta_fields = array(
-		array(
-            // fields generated in code:
-            // offence
-            // sentence
-            // date_tried
-            // discharged
-            // gazette_source
-            // gazette_publication_year
-            // gazette_volume
-            // gazette_page
-			'id'   => 'convictions',
-			'type' => 'array'
-		)
-	);
-	private $bio_meta_fields = array(
-		array(
-			'id' => 'bio_name',
-			'type' => 'text',
-			'label' =>  'Name',
-			'desc' =>  'First name',
-		),
-		array(
-			'id' => 'bio_surname',
-			'type' => 'text',
-			'label' =>  'Surname',
-			'desc' =>  'Last name',
-		),
-		array(
-			'id' => 'bio_christian_name',
-			'type' => 'text',
-			'label' =>  'Christian Name',
-		),
-		array(
-			'id' => 'bio_middle_name',
-			'type' => 'text',
-			'label' =>  'Middle Name',
-		),
-		array(
-			'id' => 'bio_alias',
-			'type' => 'text',
-			'label' =>  'Alias',
-		),
-		array(
-			'id' => 'bio_born',
-			'type' => 'date',
-			'label' =>  'Born',
-			'js_options' => array(
-				'defaultDate' => '"1/1/1800"',
-				'minDate' => '"1/1/1600"',
-			),
-			'inline' => true,
-			'timestamp' => true,
-		),
-		array(
-			'id' => 'bio_country_of_birth',
-			'type' => 'text',
-			'label' =>  'Country of Birth',
-		),
-		array(
-			'id' => 'bio_native_of',
-			'type' => 'text',
-			'label' =>  'Native of',
-		),
-		array(
-			'id' => 'bio_trade',
-			'type' => 'text',
-			'label' =>  'Trade',
-		),
-		array(
-			'id' => 'bio_complexion',
-			'type' => 'text',
-			'label' =>  'Complexion',
-		),
-		array(
-			'id' => 'bio_height',
-			'type' => 'text',
-			'label' =>  'Height',
-		),
-		array(
-			'id' => 'bio_hair',
-			'type' => 'text',
-			'label' =>  'Hair',
-		),
-		array(
-			'id' => 'bio_eyes',
-			'type' => 'text',
-			'label' =>  'Eyes',
-		),
-		array(
-			'id' => 'bio_nose',
-			'type' => 'text',
-			'label' =>  'Nose',
-		),
-		array(
-			'id' => 'bio_chin',
-			'type' => 'text',
-			'label' =>  'Chin',
-		),
-		array(
-			'id' => 'bio_mouth',
-			'type' => 'text',
-			'label' =>  'Mouth',
-		),
-		array(
-			'id' => 'bio_photographed',
-			'type' => 'text',
-			'label' =>  'Photographed',
-		),
-		array(
-			'id' => 'bio_previous_convictions',
-			'type' => 'text',
-			'label' =>  'Previous Convictions',
-		),
-		array(
-			'id' => 'bio_remarks',
-			'type' => 'wysiwyg',
-			'label' =>  'Remarks',
-		),
-	);
+	private $conviction_meta_fields;
+	private $bio_meta_fields;
 
 	public function __construct()
 	{
+		$this->conviction_meta_fields = array(
+			array(
+				// fields generated in code:
+				// offence
+				// sentence
+				// date_tried
+				// discharged
+				// gazette_source
+				// gazette_publication_year
+				// gazette_volume
+				// gazette_page
+				'id'   => 'convictions',
+				'type' => 'array',
+			),
+		);
+
+        $this->bio_meta_fields = array(
+	        array(
+		        'id' => bio::NAME['id'],
+		        'type' => bio::NAME['type'],
+		        'label' =>  bio::NAME['desc'],
+	        ),
+	        array(
+		        'id' => bio::SURNAME['id'],
+		        'type' => bio::SURNAME['type'],
+		        'label' =>  bio::SURNAME['desc'],
+	        ),
+	        array(
+		        'id' => bio::CHRISTIAN_NAME['id'],
+		        'type' => bio::CHRISTIAN_NAME['type'],
+		        'label' =>  bio::CHRISTIAN_NAME['desc'],
+	        ),
+	        array(
+		        'id' => bio::MIDDLE_NAME['id'],
+		        'type' => bio::MIDDLE_NAME['type'],
+		        'label' =>  bio::MIDDLE_NAME['desc'],
+	        ),
+	        array(
+		        'id' => bio::ALIAS['id'],
+		        'type' => bio::ALIAS['type'],
+		        'label' =>  bio::ALIAS['desc'],
+	        ),
+	        array(
+		        'id' => bio::BORN['id'],
+		        'type' => bio::BORN['type'],
+		        'label' =>  bio::BORN['desc'],
+		        'js_options' => array(
+			        'defaultDate' => '"1/1/1800"',
+			        'minDate' => '"1/1/1600"',
+		        ),
+		        'inline' => true,
+		        'timestamp' => true,
+	        ),
+	        array(
+		        'id' => bio::COUNTRY_OF_BIRTH['id'],
+		        'type' => bio::COUNTRY_OF_BIRTH['type'],
+		        'label' =>  bio::COUNTRY_OF_BIRTH['desc'],
+	        ),
+	        array(
+		        'id' => bio::NATIVE_OF['id'],
+		        'type' => bio::NATIVE_OF['type'],
+		        'label' =>  bio::NATIVE_OF['desc'],
+	        ),
+	        array(
+		        'id' => bio::TRADE['id'],
+		        'type' => bio::TRADE['type'],
+		        'label' =>  bio::TRADE['desc'],
+	        ),
+	        array(
+		        'id' => bio::COMPLEXION['id'],
+		        'type' => bio::COMPLEXION['type'],
+		        'label' =>  bio::COMPLEXION['desc'],
+	        ),
+	        array(
+		        'id' => bio::HEIGHT['id'],
+		        'type' => bio::HEIGHT['type'],
+		        'label' =>  bio::HEIGHT['desc'],
+	        ),
+	        array(
+		        'id' => bio::HAIR['id'],
+		        'type' => bio::HAIR['type'],
+		        'label' =>  bio::HAIR['desc'],
+	        ),
+	        array(
+		        'id' => bio::EYES['id'],
+		        'type' => bio::EYES['type'],
+		        'label' =>  bio::EYES['desc'],
+	        ),
+	        array(
+		        'id' => bio::NOSE['id'],
+		        'type' => bio::NOSE['type'],
+		        'label' =>  bio::NOSE['desc'],
+	        ),
+	        array(
+		        'id' => bio::CHIN['id'],
+		        'type' => bio::CHIN['type'],
+		        'label' =>  bio::CHIN['desc'],
+	        ),
+	        array(
+		        'id' => bio::MOUTH['id'],
+		        'type' => bio::MOUTH['type'],
+		        'label' =>  bio::MOUTH['desc'],
+	        ),
+	        array(
+		        'id' => bio::PHOTOGRAPHED['id'],
+		        'type' => bio::PHOTOGRAPHED['type'],
+		        'label' =>  bio::PHOTOGRAPHED['desc'],
+	        ),
+	        array(
+		        'id' => bio::PREVIOUS_CONVICTIONS['id'],
+		        'type' => bio::PREVIOUS_CONVICTIONS['type'],
+		        'label' =>  bio::PREVIOUS_CONVICTIONS['desc'],
+	        ),
+	        array(
+		        'id' => bio::REMARKS['id'],
+		        'type' => bio::REMARKS['type'],
+		        'label' =>  bio::REMARKS['desc'],
+	        ),
+        );
+
 		add_action('add_meta_boxes', array($this, 'add_meta_boxes'));
 		add_action('save_post', array($this, 'save_fields'));
 	}
@@ -170,198 +178,108 @@ class gaol_metaboxes
 		//get the saved meta as an array
 		$convictions = get_post_meta($post->ID,'convictions',false);
 
-		$c = 0;
+		$count             = 0;
+		$conviction_fields = new fields\conviction();
+		$gazette_fields    = new fields\gazette();
+
 		if ( count( $convictions ) > 0 ) {
 			foreach( $convictions[0] as $conviction ) {
-			    ?>
+                ?>
                 <div class="conviction-entry">
                     <!--CONVICTION DETAILS-->
-                    <h4>Conviction details</h4>
-                    <table class="form-table">
-                        <tbody>
-                        <tr>
-                            <th>
-                                <label for="convictions[<?php echo $c ?>][offence]">Offence</label>
-                            </th>
-                            <td>
-                                <input style="width: 100%" id="conviction_offence" name="convictions[<?php echo $c ?>][offence]" type="text" value="<?php echo $conviction['offence'] ?>">
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <label for="convictions[<?php echo $c ?>][sentence]">Sentence</label>
-                            </th>
-                            <td>
-                                <input style="width: 100%" id="conviction_sentence" name="convictions[<?php echo $c ?>][sentence]" type="text" value="<?php echo $conviction['sentence'] ?>">
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <label for="convictions[<?php echo $c ?>][date_tried]">Date Tried</label>
-                            </th>
-                            <td>
-                                <input style="width: 100%" id="conviction_date_tried" name="convictions[<?php echo $c ?>][date_tried]" type="text" value="<?php echo $conviction['date_tried'] ?>">
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <label for="convictions[<?php echo $c ?>][discharged]">Date Discharged</label>
-                            </th>
-                            <td>
-                                <input style="width: 100%" id="conviction_discharged" name="convictions[<?php echo $c ?>][discharged]" type="text" value="<?php echo $conviction['discharged'] ?>">
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-
+		                <?php
+                            $out = $this->conviction_table_start('Conviction details');
+                            foreach ($conviction_fields->getConstants() as $field) {
+                                $out .= $this->convictions_row($count, $field['id'], $field['desc'], $conviction[$field['id']], $field['type']);
+                            }
+                            $out .= $this->conviction_table_end();
+                            echo $out;
+		                ?>
                     <!--GAZETTE DETAILS-->
-                    <h4>Gazette entry details</h4>
-                    <table class="form-table">
-                        <tbody>
-                        <tr>
-                            <th>
-                                <label for="convictions[<?php echo $c ?>][gazette_source]">Source</label>
-                            </th>
-                            <td>
-                                <input style="width: 100%" id="gazette_source" name="convictions[<?php echo $c ?>][gazette_source]" type="text" value="<?php echo $conviction['gazette_source'] ?>">
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <label for="convictions[<?php echo $c ?>][gazette_publication_year]">Publication Year</label>
-                            </th>
-                            <td>
-                                <input style="width: 100%" id="gazette_publication_year" name="convictions[<?php echo $c ?>][gazette_publication_year]" type="number" value="<?php echo $conviction['gazette_publication_year'] ?>">
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <label for="convictions[<?php echo $c ?>][gazette_volume]">Volume</label>
-                            </th>
-                            <td>
-                                <input style="width: 100%" id="gazette_volume" name="convictions[<?php echo $c ?>][gazette_volume]" type="text" value="<?php echo $conviction['gazette_volume'] ?>">
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <label for="convictions[<?php echo $c ?>][gazette_page]">Page</label>
-                            </th>
-                            <td>
-                                <input style="width: 100%" id="gazette_page" name="convictions[<?php echo $c ?>][gazette_page]" type="number" value="<?php echo $conviction['gazette_page'] ?>">
-                            </td>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <td>
-                                <button type="button" class="removeConviction button button-link-delete" style="float: right;">Remove conviction</button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                        <?php
+                            $out = $this->conviction_table_start('Gazette entry details');
+                            foreach ($gazette_fields->getConstants() as $field) {
+                                    $out .= $this->convictions_row($count, $field['id'], $field['desc'], $conviction[$field['id']], $field['type']);
+                            }
+                        $out .= $this->conviction_remove_entry_button();
+                        $out .= $this->conviction_table_end();
+                        echo $out;
+                        ?>
                     <hr>
                 </div>
                 <?php
-			    $c++;
+			    $count++;
 			}
 		}
 		?>
-		<span id="conviction-area"></span>
-		<button id="addConviction" class="button" style="flo">Add Conviction</button>
 
-		<!-- LOGIC HERE -->
+		<span id="conviction-area"></span>
+		<button id="addConviction" class="button">Add Conviction</button>
+
+		<!-- DYNAMIC CONVICTION -->
 		<script>
             var $ =jQuery.noConflict();
 
             $(document).ready(function() {
-                var count = <?php echo $c; ?>;
+                var count = <?php echo $count; ?>;
                 $("#addConviction").click(function() {
                     count++;
 
-                    var offence_html = '<div class="conviction-entry">' +
-                        '<h4>Conviction details</h4>' +
-                        '<table class="form-table">'+
-                            '<tbody>'+
-                                '<tr>'+
-                                    '<th>'+
-                                        '<label for="convictions['+count+'][offence]">Offence</label>'+
-                                    '</th>'+
-                                    '<td>'+
-                                        '<input style="width: 100%" id="conviction_offence" name="convictions['+count+'][offence]" type="text" value="">'+
-                                    '</td>'+
-                                '</tr>'+
-                                '<tr>'+
-                                    '<th>'+
-                                        '<label for="convictions['+count+'][sentence]">Sentence</label>'+
-                                    '</th>'+
-                                    '<td>'+
-                                        '<input style="width: 100%" id="conviction_sentence" name="convictions['+count+'][sentence]" type="text" value="">'+
-                                    '</td>'+
-                                '</tr>'+
-                                '<tr>'+
-                                    '<th>'+
-                                        '<label for="convictions['+count+'][date_tried]">Date Tried</label>'+
-                                    '</th>'+
-                                    '<td>'+
-                                        '<input style="width: 100%" id="conviction_date_tried" name="convictions['+count+'][date_tried]" type="date" value="">'+
-                                    '</td>'+
-                                '</tr>'+
-                                '<tr>'+
-                                    '<th>'+
-                                        '<label for="convictions['+count+'][discharged]">Date Discharged</label>'+
-                                    '</th>'+
-                                    '<td>'+
-                                        '<input style="width: 100%" id="conviction_discharged" name="convictions['+count+'][discharged]" type="date" value="">'+
-                                    '</td>'+
-                                '</tr>'+
-                            '</tbody>'+
-                        '</table>'+
-                        '<h4>Gazette entry details</h4>' +
-                        '<table class="form-table">' +
-                            '<tbody>' +
-                                '<tr>' +
-                                    '<th>' +
-                                        '<label for="convictions['+count+'][gazette_source]">Source</label>' +
-                                    '</th>' +
-                                    '<td>' +
-                                        '<input style="width: 100%" id="gazette_source" name="convictions['+count+'][gazette_source]" type="text" value="">' +
-                                    '</td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                    '<th>' +
-                                        '<label for="convictions['+count+'][gazette_publication_year]">Publication Year</label>' +
-                                    '</th>' +
-                                    '<td>' +
-                                        '<input style="width: 100%" id="gazette_publication_year" name="convictions['+count+'][gazette_publication_year]" type="number" value="">' +
-                                    '</td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                    '<th>' +
-                                        '<label for="convictions['+count+'][gazette_volume]">Volume</label>' +
-                                    '</th>' +
-                                    '<td>' +
-                                        '<input style="width: 100%" id="gazette_volume" name="convictions['+count+'][gazette_volume]" type="text" value="">' +
-                                    '</td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                    '<th>' +
-                                        '<label for="convictions['+count+'][gazette_page]">Page</label>' +
-                                    '</th>' +
-                                    '<td>' +
-                                        '<input style="width: 100%" id="gazette_page" name="convictions['+count+'][gazette_page]" type="number" value="">' +
-                                    '</td>' +
-                                '</tr>' +
-                                '<tr>'+
-                                    '<th></th>'+
-                                    '<td>'+
-                                        '<button type="button" class="removeConviction button button-link-delete" style="float: right;">Remove conviction</button>'+
-                                    '</td>'+
-                                '</tr>'+
-                            '</tbody>' +
-                        '</table>' +
-                        '<hr>'+
-                        '</div>';
+                    var delEntryRow = $('<tr>')
+                        .append($('<th>'))
+                        .append($('<td>')
+                            .html($('<button>')
+                                .addClass('removeConviction button button-link-delete')
+                                .css('float', 'right')
+                                .attr('type', 'button')
+                                .html('Remove conviction')
+                            )
+                        );
 
-                    $('#conviction-area').append(offence_html);
+                    var get_table = function (fields) {
+                        var table = $('<table>').addClass('form-table');
+
+                        $.each(fields, function (i, field) {
+                            var row = $('<tr>')
+                                .append($('<th>')
+                                    .html($('<label>')
+                                        .html(field.desc)
+                                        .attr('for', 'convictions[' + count + '][' + field.id + ']')
+                                    )
+                                )
+                                .append($('<td>')
+                                    .html($('<input>')
+                                        .css('width', '100%')
+                                        .attr({
+                                            id: field.id,
+                                            name: 'convictions[' + count + '][' + field.id + ']',
+                                            type: field.type,
+                                            value: ''
+                                        })
+                                    )
+                                );
+
+                            table.append(row);
+                        });
+                        return table;
+                    };
+
+                    var convFields = <?php echo json_encode($conviction_fields->getConstants()) ?>;
+                    var gazetteFields = <?php echo json_encode($gazette_fields->getConstants()) ?>;
+
+                    var container = $('<div class="conviction-entry">');
+                    var convTable = get_table(convFields);
+                    var gazetteTable = get_table(gazetteFields);
+                    // add 'delete entry' button
+                    gazetteTable.append(delEntryRow);
+
+                    $(container)
+                        .append($('<h4>').html('Conviction details'))
+                        .append(convTable)
+                        .append($('<h4>').html('Gazette entry details'))
+                        .append(gazetteTable);
+
+                    $('#conviction-area').append(container);
 
                     return false;
                 });
@@ -375,6 +293,46 @@ class gaol_metaboxes
 
         <?php
 	}
+
+	/**
+	 * @param $count int
+	 * @param $field_id string
+	 * @param $field_description
+	 * @param $field_value string
+	 * @param $field_type string
+	 * @return string table row
+	 */
+	private function convictions_row($count, $field_id, $field_description, $field_value, $field_type)
+    {
+	    return '<tr>
+            <th>
+                <label for="convictions[' . $count . '][' . $field_id . ']">' . $field_description . '</label>
+            </th>
+            <td>
+                <input style="width: 100%" id="' . $field_id . '" name="convictions[' . $count . '][' . $field_id . ']"
+                       type="' . $field_type . '" value="' . $field_value . '">
+            </td>
+        </tr>';
+    }
+
+    private function conviction_table_start($title){
+        return '<h4>'. $title .'</h4>
+                <table class="form-table">
+                    <tbody>';
+    }
+
+    private function conviction_remove_entry_button(){
+	    return '<tr>
+                    <th></th>
+                    <td>
+                        <button type="button" class="removeConviction button button-link-delete" style="float: right;">Remove conviction</button>
+                    </td>
+                </tr>';
+    }
+
+    private function conviction_table_end(){
+	    return '</tbody></table>';
+    }
 
 	public function convict_details_callback($post)
 	{
