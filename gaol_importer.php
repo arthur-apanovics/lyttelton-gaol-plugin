@@ -2,7 +2,7 @@
 
 namespace lyttelton_gaol;
 
-use http\Exception\BadQueryStringException;
+use League\Csv\Exception;
 use League\Csv\Reader, lyttelton_gaol\fields\bio, lyttelton_gaol\fields\conviction, lyttelton_gaol\fields\gazette;
 
 require 'csv/autoload.php';
@@ -12,8 +12,8 @@ class gaol_importer{
 
 	public function __construct(string $filename)
 	{
-		if (!isset($filename))
-			throw new BadQueryStringException("Convict Import Error: filename missing!");
+		if (empty($filename))
+			throw new Exception("Convict Import Error: filename missing!");
 		$this->filename = $filename;
 
 		add_action('admin_head', array($this, 'do_the_import'));
@@ -21,7 +21,7 @@ class gaol_importer{
 
 	public function do_the_import(){
 		//load the CSV document from a stream
-		$stream = fopen(__DIR__ . $this->filename, 'r');
+		$stream = fopen(__DIR__ . '/' . $this->filename, 'r');
 		$csv = Reader::createFromStream($stream);
 		$csv->setDelimiter(',');
 		$csv->setHeaderOffset(0);
@@ -39,8 +39,8 @@ class gaol_importer{
 			// trim whitespace
 			foreach ($convict as $key => $value){$convict[$key] = trim($value);}
 
-			$name_key = $convict['Surname'] . ' '
-				. $convict['Given Name(s)']
+			$name_key = $convict['Given Name(s)'] . ' '
+				. $convict['Surname']
 				. ' (' . $convict['Birth year'] . ')';
 
 			if (!array_key_exists($name_key, $grouped_convicts)){

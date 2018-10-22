@@ -43,7 +43,7 @@ class conviction
 {
 	use field_methods;
 
-	public const OFFENCE    = ['id' => 'offence_offence',    'desc' => 'Offence',         'type' => 'text'];
+	public const OFFENCE    = ['id' => 'offence_crime',      'desc' => 'Offence',         'type' => 'text'];
 	public const SENTENCE   = ['id' => 'offence_sentence',   'desc' => 'Sentence',        'type' => 'text'];
 	public const DATE_TRIED = ['id' => 'offence_date_tried', 'desc' => 'Date Tried',      'type' => 'date'];
 	public const DISCHARGED = ['id' => 'offence_discharged', 'desc' => 'Date Discharged', 'type' => 'date'];

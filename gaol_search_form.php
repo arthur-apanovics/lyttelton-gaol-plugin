@@ -13,6 +13,7 @@ use lyttelton_gaol\fields\conviction;
 	<input id="tab-find-by-conviction" class="gaol-search-tab" type="radio" name="tabs">
 	<label for="tab-find-by-conviction" class="gaol-search-tab-label">Search by conviction</label>
 
+    <!-- FIND PERSON -->
 	<section id="find-person" class="gaol-search-section">
 		<form role="search" method="get" class="search-form" action="<?php echo home_url( '/' ); ?>">
 			<div class="form-row">
@@ -46,28 +47,76 @@ use lyttelton_gaol\fields\conviction;
 					</select>
 				</div>
 			</div>
+
 			<input type="hidden" name="post_type" value="convict" />
-			<button type="submit" class="btn btn-primary">Search</button>
+            <input type="hidden" name="search_by" value="person" />
+            <button type="submit" class="btn btn-primary">Search</button>
 		</form>
 	</section>
 
-	<section id="find-by-keyword" class="gaol-search-section">
-        <div class="form-group col-md-4">
-            <label for="offence"><?php echo conviction::OFFENCE['desc'] ?></label>
-            <select id="offence" class="form-control" name="<?php echo conviction::OFFENCE['id'] ?>">
-                <option disabled selected value="">Select...</option>
-				<?php
-                    $all_con = [];
-                    foreach (get_all_meta_values('convictions', true) as $con)
-                        $all_con[] = unserialize($con);
+    <!-- FIND BY OFFENCE -->
+	<section id="find-by-offence" class="gaol-search-section">
+            <div id="offence-list">
+		        <?php
+		        $all_people_all_con = [];
+		        foreach (get_all_meta_values('convictions', true) as $all)
+			        $all_people_all_con[] = unserialize($all);
 
-                    //TODO GROUP CONVICTIONS FROM $ALL_CON
+		        $unique = [];
+		        foreach ($all_people_all_con as $all_con) {
+			        foreach ($all_con as $con) {
+			            $offence_value = $con[conviction::OFFENCE['id']];
+				        if (!in_array($offence_value, $unique) && !preg_match('/(\(.*\)|and)/', $offence_value)) {
+					        $unique[] = $offence_value;
+				        }
+			        }
+		        }
+                ?>
+                <form role="search" method="get" class="search-form" action="<?php echo home_url( '/' ); ?>">
+                    <fieldset>
+                        <legend>Choose convictions</legend>
+                        <div class="row">
+				            <?php
+				            natcasesort($unique);
+				            $col1    = $col2 = '';
+				            $half    = count($unique) / 2;
+				            $current = 0;
+				            foreach ($unique as $key => $value) {
+					            $str = '<div class="form-group form-check">
+                                    <input type="checkbox" id="conviction_' . $key . '" class="form-check-input" 
+                                        name="' . conviction::OFFENCE['id'] . '[]" value="' . $value . '" />
+                                    <label class="form-check-label" for="conviction_' . $key . '">' . $value . '</label>
+                                  </div>';
 
-                    foreach ($all_con as $conviction){
-                        echo "<option value='$conviction'>$conviction</option>";
-				}
-				?>
-            </select>
+					            if ($current < $half)
+					                $col1 .= $str;
+					            else
+					                $col2 .= $str;
+
+					            $current++;
+				            }
+				            ?>
+                            <div class="col-sm">
+                                <?php echo $col1; ?>
+                            </div>
+                            <div class="col-sm">
+		                        <?php echo $col2; ?>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div id="search-mode-wrapper" class="float-right">
+                        <label for="search-mode">Search mode</label>
+                        <select name="search-mode" id="search-mode">
+                            <option value="AND" selected>AND</option>
+                            <option value="OR">OR</option>
+                        </select>
+                    </div>
+                    <input type="hidden" name="post_type" value="convict" />
+                    <input type="hidden" name="search_by" value="conviction" />
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
         </div>
 	</section>
+    <hr>
 </div>

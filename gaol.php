@@ -21,9 +21,16 @@ use lyttelton_gaol\fields;
 require 'gaol_metaboxes.php';
 require 'gaol_importer.php';
 
+function lyttelton_setup() {
+	add_shortcode( 'lyttelton_search_form', 'lyttelton_search_form' );
+	add_filter( 'query_vars', 'lyttelton_register_query_vars' );
+	add_action( 'pre_get_posts', 'lyttelton_pre_get_posts', 1 );
+}
+add_action( 'init', 'lyttelton_setup' );
+add_action('init', 'lyttelton_convict_post_type', 0);
+
 // Register Custom Post Type
-if (!function_exists('lyttelton_convict_post_type')) {
-	function lyttelton_convict_post_type()
+function lyttelton_convict_post_type()
 	{
 		$labels = array(
 			'name'                  => 'Convicts',
@@ -77,32 +84,28 @@ if (!function_exists('lyttelton_convict_post_type')) {
 		register_post_type('convict', $args);
 	}
 
-	add_action('init', 'lyttelton_convict_post_type', 0);
-}
-
 // Register Custom Meta
-if (class_exists('\lyttelton_gaol\gaol_metaboxes')){
-	new \lyttelton_gaol\gaol_metaboxes();
-}
-
-function lyttelton_setup() {
-	add_shortcode( 'lyttelton_search_form', 'lyttelton_search_form' );
-	add_filter( 'query_vars', 'lyttelton_register_query_vars' );
-	add_action( 'pre_get_posts', 'lyttelton_pre_get_posts', 1 );
-}
-add_action( 'init', 'lyttelton_setup' );
+new \lyttelton_gaol\gaol_metaboxes();
 
 /**
  * Register custom query vars
- *
  * @link https://codex.wordpress.org/Plugin_API/Filter_Reference/query_vars
  */
 function lyttelton_register_query_vars( $vars ) {
 	$bio_fields = new lyttelton_gaol\fields\bio();
+	$conviction_fields = new lyttelton_gaol\fields\bio();
+	$gazette_fields = new fields\gazette();
+	$all_fields = $bio_fields->getConstants();// + $conviction_fields->getConstants() + $gazette_fields->getConstants();
 
-	foreach ($bio_fields->getConstants() as $key => $field) {
+	foreach ($all_fields as $key => $field) {
 		$vars[] = $field['id'];
 	}
+	// extra vars for other search options
+	$vars[] = 'search_by';
+	$vars[] = 'search-mode';
+
+	$vars[] = fields\conviction::OFFENCE['id'];
+
 	return $vars;
 }
 
@@ -114,8 +117,7 @@ function lyttelton_search_form($args)
 /**
  * Build a custom query based on several conditions
  * The pre_get_posts action gives developers access to the $query object by reference
- * any changes you make to $query are made directly to the original object - no return value is requested
- *
+ * any changes you make to $query are made directly to the original object - no return value is requested.
  * Custom Search:
  * @link https://www.smashingmagazine.com/2016/03/advanced-wordpress-search-with-wp_query/
  * @link https://codex.wordpress.org/Plugin_API/Action_Reference/pre_get_posts
@@ -139,17 +141,36 @@ function lyttelton_pre_get_posts( $query ) {
 	$gaz_fields = new fields\gazette();
 	$all_fields = $bio_fields->getConstants() + $con_fields->getConstants() + $gaz_fields->getConstants();
 
-	foreach ($all_fields as $field)
-	{
-		if (!empty(get_query_var($field['id']))) {
-			$meta_query[] = array('key' => $field['id'], 'value' => get_query_var($field['id']), 'compare' => 'LIKE');
-		}
+	$search_by = get_query_var('search_by');
+
+	switch ($search_by){
+		case 'person':
+			foreach ($all_fields as $field) {
+				if (!empty(get_query_var($field['id']))) {
+					$meta_query[] = array('key' => $field['id'], 'value' => get_query_var($field['id']), 'compare' => 'LIKE');
+				}
+			}
+
+			if (count($meta_query) > 1) {
+				$meta_query['relation'] = 'AND';
+			}
+			break;
+
+		case 'conviction':
+			foreach (get_query_var(fields\conviction::OFFENCE['id']) as $param){
+				$meta_query[] = array('key' => 'convictions', 'value' => "$param", 'compare' => 'RLIKE');
+			}
+
+			if (count($meta_query) > 1) {
+				$meta_query['relation'] = get_query_var('search-mode');
+			}
+			break;
+
+		default:
+			break;
 	}
 
-	if( count( $meta_query ) > 1 ){
-		$meta_query['relation'] = 'AND';
-	}
-	if( count( $meta_query ) > 0 ){
+	if (count($meta_query) > 0) {
 		$query->set('meta_query', $meta_query);
 		$query->set('nopaging', true);
 	}
