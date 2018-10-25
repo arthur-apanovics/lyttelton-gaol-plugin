@@ -25,6 +25,7 @@ function lyttelton_setup() {
 	add_shortcode( 'lyttelton_search_form', 'lyttelton_search_form' );
 	add_filter( 'query_vars', 'lyttelton_register_query_vars' );
 	add_action( 'pre_get_posts', 'lyttelton_pre_get_posts', 1 );
+	add_action( 'save_post', 'set_convict_post_title', 10, 3 );
 }
 add_action( 'init', 'lyttelton_setup' );
 add_action('init', 'lyttelton_convict_post_type', 0);
@@ -65,7 +66,7 @@ function lyttelton_convict_post_type()
 			'label'               => 'Convict',
 			'description'         => 'Lyttelton Gaol Convict',
 			'labels'              => $labels,
-			'supports'            => array('editor', 'thumbnail', 'comments', 'revisions'),
+			'supports'            => array('editor', 'thumbnail', 'comments'),
 			'taxonomies'          => array('category', 'post_tag', 'link_category', 'post_format'),
 			'hierarchical'        => false,
 			'public'              => true,
@@ -93,11 +94,8 @@ new \lyttelton_gaol\gaol_metaboxes();
  */
 function lyttelton_register_query_vars( $vars ) {
 	$bio_fields = new lyttelton_gaol\fields\bio();
-	$conviction_fields = new lyttelton_gaol\fields\bio();
-	$gazette_fields = new fields\gazette();
-	$all_fields = $bio_fields->getConstants();// + $conviction_fields->getConstants() + $gazette_fields->getConstants();
 
-	foreach ($all_fields as $key => $field) {
+	foreach ($bio_fields->getConstants() as $key => $field) {
 		$vars[] = $field['id'];
 	}
 	// extra vars for other search options
@@ -111,7 +109,9 @@ function lyttelton_register_query_vars( $vars ) {
 
 function lyttelton_search_form($args)
 {
-	include 'gaol_search_form.php';
+	ob_start();
+	require('gaol_search_form.php');
+	return ob_get_clean();
 }
 
 /**
@@ -174,6 +174,27 @@ function lyttelton_pre_get_posts( $query ) {
 		$query->set('meta_query', $meta_query);
 		$query->set('nopaging', true);
 	}
+}
+
+/**
+ * Save post title when a convict post is saved.
+ *
+ * @param int $post_id The post ID.
+ * @param post $post The post object.
+ * @param bool $update Whether this is an existing post being updated or not.
+ */
+function set_convict_post_title( $post_id, $post, $update ) {
+	if (get_post_type($post_id) != 'convict')
+		return;
+
+	remove_action( 'save_post', 'set_convict_post_title');
+
+	$new_title = get_post_meta($post_id, fields\bio::NAME['id'], true)
+		. ' ' . get_post_meta($post_id, fields\bio::SURNAME['id'], true)
+		. ' (' . get_post_meta($post_id, fields\bio::BORN['id'], true) . ')';
+	wp_update_post(array('ID' => $post_id, 'post_title' => $new_title));
+
+	add_action( 'save_post', 'set_convict_post_title', 10, 3 );
 }
 
 // CONVICT IMPORTING

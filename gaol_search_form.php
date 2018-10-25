@@ -20,27 +20,34 @@ use lyttelton_gaol\fields\conviction;
 				<div class="form-group col-md-6">
 					<!--first name-->
 					<label for="firstName"><?php echo bio::NAME['desc']?></label>
-					<input type="text" class="form-control" id="firstName" name="<?php echo bio::NAME['id'] ?>" placeholder="Marry">
+					<input type="text" class="form-control" id="firstName" name="<?php echo bio::NAME['id'] ?>" placeholder="e.g. Mary">
 				</div>
 				<!--last name-->
 				<div class="form-group col-md-6">
 					<label for="lastName"><?php echo bio::SURNAME['desc'] ?></label>
-					<input type="text" class="form-control" id="lastName" name="<?php echo bio::SURNAME['id'] ?>" placeholder="Ann">
+					<input type="text" class="form-control" id="lastName" name="<?php echo bio::SURNAME['id'] ?>" placeholder="e.g. Smith">
 				</div>
 			</div>
 			<div class="form-row">
 				<!--country-->
-				<div class="form-group col-md-8">
-					<label for="countryOfBirth"><?php echo bio::COUNTRY_OF_BIRTH['desc'] ?></label>
-					<input type="text" class="form-control" id="countryOfBirth" name="<?php echo bio::COUNTRY_OF_BIRTH['id'] ?>" placeholder="England">
+				<div class="form-group col-md-6">
+                    <label for="country-from"><?php echo bio::COUNTRY_OF_BIRTH['desc'] ?></label>
+                    <select id="country-from" class="form-control" name="<?php echo bio::COUNTRY_OF_BIRTH['id'] ?>">
+                        <option selected value="">Select country...</option>
+						<?php
+						foreach (array_filter(get_all_meta_values(bio::COUNTRY_OF_BIRTH['id'], true)) as $country){
+							echo "<option value='$country'>$country</option>";
+						}
+						?>
+                    </select>
 				</div>
 				<!--trade-->
-				<div class="form-group col-md-4">
+				<div class="form-group col-md-6">
 					<label for="trade"><?php echo bio::TRADE['desc'] ?></label>
 					<select id="trade" class="form-control" name="<?php echo bio::TRADE['id'] ?>">
-						<option disabled selected value="">Select...</option>
+						<option selected value="">Select trade...</option>
 						<?php
-							foreach (get_all_meta_values(bio::TRADE['id'], true) as $trade){
+							foreach (array_filter(get_all_meta_values(bio::TRADE['id'], true)) as $trade){
 								echo "<option value='$trade'>$trade</option>";
 							}
 						?>

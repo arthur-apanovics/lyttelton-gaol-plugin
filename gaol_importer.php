@@ -40,10 +40,11 @@ class gaol_importer{
 			foreach ($convict as $key => $value){$convict[$key] = trim($value);}
 
 			$name_key = $convict['Given Name(s)'] . ' '
-				. $convict['Surname']
+					  . $convict['Surname']
 				. ' (' . $convict['Birth year'] . ')';
 
 			if (!array_key_exists($name_key, $grouped_convicts)){
+				// WP POST FIELD                                              // CSV HEADER FIELD
 				$grouped_convicts[$name_key][bio::NAME['id']]                 = $convict['Given Name(s)'];
 				$grouped_convicts[$name_key][bio::SURNAME['id']]              = $convict['Surname'];
 				$grouped_convicts[$name_key][bio::CHRISTIAN_NAME['id']]       = $convict['Christian Name'];
@@ -69,6 +70,7 @@ class gaol_importer{
 				// CONVICTION
 				conviction::OFFENCE['id']       => $convict['Offence'],
 				conviction::SENTENCE['id']      => $convict['Sentences'],
+				conviction::WHERE_TRIED['id']   => $convict['Where tried'],
 				conviction::DATE_TRIED['id']    => $convict['Date tried'],
 				conviction::DISCHARGED['id']    => $convict['Date discharged'],
 				// GAZETTE
@@ -84,6 +86,7 @@ class gaol_importer{
 		$created = 0;
 		foreach ($grouped_convicts as $key => $value){
 			if (post_exists($key)){
+				echo "Duplicate entry - $key (given names + surname + (year)). Entry will NOT be imported!<br>";
 				continue;
 			}
 
@@ -97,6 +100,12 @@ class gaol_importer{
 			);
 
 			$post_id = wp_insert_post($post_arr, true);
+
+			if (!is_int($post_id)){
+				echo "Error while importing $key. Check character encoding...<br>";
+				continue;
+			}
+
 			$created++;
 			echo "created post $post_id - $key<br>";
 		}
