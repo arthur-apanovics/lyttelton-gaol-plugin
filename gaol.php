@@ -8,7 +8,7 @@
  * Plugin Name:       Lyttelton Gaol
  * Plugin URI:        likeminded.co.nz
  * Description:       Lyttelton gaol convict post type & fields
- * Version:           1.0.0
+ * Version:           1.1.0
  * Author:            Like-Minded
  * Author URI:        likeminded.co.nz
  * License:           GPL-2.0+
