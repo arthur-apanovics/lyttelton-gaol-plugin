@@ -172,8 +172,9 @@ function lyttelton_pre_get_posts( $query ) {
 
 	if (count($meta_query) > 0) {
 		$query->set('meta_query', $meta_query);
-		$query->set('nopaging', true);
 	}
+
+	$query->set('nopaging', true);
 }
 
 /**
