@@ -47,8 +47,8 @@ class gaol_importer{
 				// WP POST FIELD                                              // CSV HEADER FIELD
 				$grouped_convicts[$name_key][bio::NAME['id']]                 = $convict['Given Name(s)'];
 				$grouped_convicts[$name_key][bio::SURNAME['id']]              = $convict['Surname'];
-				$grouped_convicts[$name_key][bio::CHRISTIAN_NAME['id']]       = $convict['Christian Name'];
-				$grouped_convicts[$name_key][bio::MIDDLE_NAME['id']]          = $convict['Middle Name'];
+//				$grouped_convicts[$name_key][bio::CHRISTIAN_NAME['id']]       = $convict['Christian Name'];
+//				$grouped_convicts[$name_key][bio::MIDDLE_NAME['id']]          = $convict['Middle Name'];
 				$grouped_convicts[$name_key][bio::ALIAS['id']]                = $convict['Alias'];
 				$grouped_convicts[$name_key][bio::BORN['id']]                 = $convict['Birth year'];
 				$grouped_convicts[$name_key][bio::COUNTRY_OF_BIRTH['id']]     = $convict['Country of birth'];

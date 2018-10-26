@@ -17,15 +17,15 @@ class bio
 {
 	use field_methods;
 
-	public const NAME                 = ['id' => 'bio_name',                 'desc' => 'First name',           'type' => 'text'];
-	public const SURNAME              = ['id' => 'bio_surname',              'desc' => 'Last name',            'type' => 'text'];
+	public const NAME                 = ['id' => 'bio_name',                 'desc' => 'Given Names',          'type' => 'text'];
+	public const SURNAME              = ['id' => 'bio_surname',              'desc' => 'Last Name',            'type' => 'text'];
 	public const CHRISTIAN_NAME       = ['id' => 'bio_christian_name',       'desc' => 'Christian Name',       'type' => 'text'];
 	public const MIDDLE_NAME          = ['id' => 'bio_middle_name',          'desc' => 'Middle Name',          'type' => 'text'];
 	public const ALIAS                = ['id' => 'bio_alias',                'desc' => 'Alias',                'type' => 'text'];
 	public const BORN                 = ['id' => 'bio_born',                 'desc' => 'Born',                 'type' => 'number'];
 	public const COUNTRY_OF_BIRTH     = ['id' => 'bio_country_of_birth',     'desc' => 'Country of Birth',     'type' => 'text'];
 	public const NATIVE_OF            = ['id' => 'bio_native_of',            'desc' => 'Native of',            'type' => 'text'];
-	public const TRADE                = ['id' => 'bio_trade',                'desc' => 'Trade',                'type' => 'text'];
+	public const TRADE                = ['id' => 'bio_trade',                'desc' => 'Occupation',           'type' => 'text'];
 	public const COMPLEXION           = ['id' => 'bio_complexion',           'desc' => 'Complexion',           'type' => 'text'];
 	public const HEIGHT               = ['id' => 'bio_height',               'desc' => 'Height',               'type' => 'text'];
 	public const HAIR                 = ['id' => 'bio_hair',                 'desc' => 'Hair',                 'type' => 'text'];

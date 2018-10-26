@@ -45,16 +45,16 @@ class gaol_metaboxes
 		        'type' => bio::SURNAME['type'],
 		        'label' =>  bio::SURNAME['desc'],
 	        ),
-	        array(
-		        'id' => bio::CHRISTIAN_NAME['id'],
-		        'type' => bio::CHRISTIAN_NAME['type'],
-		        'label' =>  bio::CHRISTIAN_NAME['desc'],
-	        ),
-	        array(
-		        'id' => bio::MIDDLE_NAME['id'],
-		        'type' => bio::MIDDLE_NAME['type'],
-		        'label' =>  bio::MIDDLE_NAME['desc'],
-	        ),
+//	        array(
+//		        'id' => bio::CHRISTIAN_NAME['id'],
+//		        'type' => bio::CHRISTIAN_NAME['type'],
+//		        'label' =>  bio::CHRISTIAN_NAME['desc'],
+//	        ),
+//	        array(
+//		        'id' => bio::MIDDLE_NAME['id'],
+//		        'type' => bio::MIDDLE_NAME['type'],
+//		        'label' =>  bio::MIDDLE_NAME['desc'],
+//	        ),
 	        array(
 		        'id' => bio::ALIAS['id'],
 		        'type' => bio::ALIAS['type'],
